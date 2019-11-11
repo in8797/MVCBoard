@@ -1,7 +1,6 @@
 package co.micol.command;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -11,25 +10,26 @@ import javax.servlet.http.HttpServletResponse;
 import co.micol.dao.BoardDao;
 import co.micol.dto.BoardDto;
 
-public class BoardView implements Command {
+public class BoardEditOk implements Command {
 
 	@Override
 	public void excute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		ArrayList<BoardDto> list = new ArrayList<BoardDto>();
+		// update 호출
+		BoardDto dto = new BoardDto();
 		BoardDao dao = new BoardDao();
-		int id = Integer.parseInt(request.getParameter("id"));
-		list = dao.select(id);
-		int size = list.size();
+		dto.setId(Integer.parseInt(request.getParameter("id")));
+		dto.setTitle(request.getParameter("title"));
+		dto.setContents(request.getParameter("contents"));
 		
-		request.setAttribute("list", list);
-		request.setAttribute("size", size);
-		String path="view/boardView.jsp";
+		int n = dao.update(dto);
+		String path;
+		if(n != 0 )
+			path = "boardView.do";
+		else
+			path = "view/boardInsertFail.jsp";
+		
 		RequestDispatcher dispatcher = request.getRequestDispatcher(path);
 		dispatcher.forward(request, response);
-		
-		
-		
 	}
 
 }

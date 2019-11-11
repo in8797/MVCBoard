@@ -19,6 +19,8 @@ public class BoardList implements Command {
 		ArrayList<BoardDto> list = new ArrayList<BoardDto>();
 		list = dao.select();
 		
+		
+		
 		request.setAttribute("list", list); //(변수명,변수에 담는 값) / 요청객체에 값을 실어놓는다.
 		String path = "view/boardList.jsp";
 		RequestDispatcher dispatcher = request.getRequestDispatcher(path);

@@ -34,7 +34,7 @@ public class BoardDao {
 	public ArrayList<BoardDto> select() {
 		ArrayList<BoardDto> list = new ArrayList<BoardDto>();
 		BoardDto dto;
-		String sql = "select * from mvc_board";
+		String sql = "select * from mvc_board where btitle != '[댓글]' order by bgroup desc , bstep asc";
 		try {
 			psmt = conn.prepareStatement(sql);
 			rs = psmt.executeQuery();
@@ -59,14 +59,16 @@ public class BoardDao {
 	}
 
 	// 한건 조회
-	public BoardDto select(int id) {
-		BoardDto dto = new BoardDto();
-		String sql = "select * from mvc_board where bid=?";
+	public ArrayList<BoardDto> select(int id) {
+		ArrayList<BoardDto> list = new ArrayList<BoardDto>();
+		BoardDto dto;
+		String sql = "select * from mvc_board where bgroup=?";
 		try {
 			psmt = conn.prepareStatement(sql);
 			psmt.setInt(1, id);
 			rs = psmt.executeQuery();
 			while (rs.next()) {
+				dto = new BoardDto();
 				dto.setId(rs.getInt("bid"));
 				dto.setName(rs.getString("bname"));
 				dto.setTitle(rs.getString("btitle"));
@@ -76,12 +78,26 @@ public class BoardDao {
 				dto.setGroup(rs.getInt("bgroup"));
 				dto.setStep(rs.getInt("bstep"));
 				dto.setIndent(rs.getInt("bindent"));
+				list.add(dto);
+				viewCountUpdate(rs.getInt("bid")); // 조회수 증가 메소드 호출
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		close();
-		return dto;
+		return list;
+	}
+
+	// 조회수 증가
+	private void viewCountUpdate(int id) {
+		String sql = "update mvc_board set bhit = bhit + 1 where bid =" + id;
+
+		try {
+			psmt = conn.prepareStatement(sql);
+			psmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	// 생성
@@ -106,6 +122,16 @@ public class BoardDao {
 	// 업데이트(변경)
 	public int update(BoardDto dto) {
 		int n = 0;
+		String sql = "update mvc_board set btitle=?, bcontent=? where bid= ?";
+		try {
+			psmt = conn.prepareStatement(sql);
+			psmt.setString(1, dto.getTitle());
+			psmt.setString(2, dto.getContents());
+			psmt.setInt(3, dto.getId());
+			n = psmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		close();
 		return n;
 	}
@@ -113,6 +139,14 @@ public class BoardDao {
 	// 삭제
 	public int delete(int id) {
 		int n = 0;
+		String sql = "delete from mvc_board where bid= ? ";
+		try {
+			psmt = conn.prepareStatement(sql);
+			psmt.setInt(1, id);
+			n = psmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		close();
 		return n;
 	}

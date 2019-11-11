@@ -24,6 +24,7 @@ public class BoardWriteOk implements Command {
 		dto.setwDate(Date.valueOf(request.getParameter("date"))); // date가 String 타입이라서 date.valueof
 		int n = dao.insert(dto); // dao에 dto값 담음
 		String path = null;
+
 		if (n != 0) { // 성공시
 			path = "boardList.do"; // 목록보여줌
 //			response.sendRedirect(path);

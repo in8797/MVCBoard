@@ -10,8 +10,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import co.micol.command.BoardDelete;
 import co.micol.command.BoardEdit;
+import co.micol.command.BoardEditOk;
 import co.micol.command.BoardList;
+import co.micol.command.BoardReply;
 import co.micol.command.BoardView;
 import co.micol.command.BoardWrite;
 import co.micol.command.BoardWriteOk;
@@ -46,6 +49,10 @@ public class FrontController extends HttpServlet {
 		list.put("/boardWrite.do", new BoardWrite()); // 글쓰기
 		list.put("/boardWriteOk.do", new BoardWriteOk()); // 글저장
 		list.put("/boardView.do", new BoardView()); // 게시글 보기
+		list.put("/boardEditOk.do", new BoardEditOk()); // 글 수정 저장
+		list.put("/boardDelete.do", new BoardDelete()); // 글 삭제
+		list.put("/boardReply.do", new BoardReply()); // 댓글 작성
+//		list.put("/boardReplyOk.do", new BoardReplyOk());
 		// K V
 	}
 
